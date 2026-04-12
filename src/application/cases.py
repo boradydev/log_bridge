@@ -1,16 +1,41 @@
-from src.application.abcs import ILogCase, ITelegramLogMessage
+import logging
+from typing import TYPE_CHECKING
+
+from src.application.abcs import ILogCase
 from src.application.dtos import BanLogRecord
-from src.presentation.watch_events.abcs import INotifier
+from src.presentation.ban_log_dispatcher.abcs import INotifier
 
 
-class BannedEventCase(ILogCase):
+logger = logging.getLogger(__name__)
+
+if TYPE_CHECKING:
+    from src.core.locales.ban import I18nContext as I18n
+
+
+class BannedEventCase(ILogCase[BanLogRecord]):
     def __init__(
         self,
         notifier: INotifier,
-        message_map: ITelegramLogMessage[BanLogRecord],
+        messages: I18n,
     ) -> None:
         self.notifier = notifier
-        self.message_map = message_map
+        self.messages = messages
 
     async def execute(self, dto: BanLogRecord) -> None:
-        await self.notifier.notify(self.message_map.get(dto))
+        match dto.action:
+            case "BAN":
+                message = self.messages.BAN(
+                    email=dto.email,
+                    client_ip=dto.client_ip,
+                    duration=dto.duration,
+                )
+            case "UNBAN":
+                message = self.messages.UNBAN(
+                    email=dto.email,
+                    client_ip=dto.client_ip,
+                )
+            case _:
+                logger.warning(f"Unknown action: {dto.action}")
+                return
+
+        await self.notifier.send_message(message)
