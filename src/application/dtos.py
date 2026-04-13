@@ -8,4 +8,3 @@ class BanLogRecord:
     action: str
     email: str
     client_ip: str
-    duration: int | None = None
