@@ -2,7 +2,7 @@ import pytest
 from hypothesis import given, settings, strategies as st
 
 from src.application.banned_log import excs
-from src.application.banned_log.vals import LogUserID
+from src.application.banned_log.vals import UserIDLog
 
 
 @pytest.mark.parametrize(
@@ -14,7 +14,7 @@ from src.application.banned_log.vals import LogUserID
     ],
 )
 async def test_base_positive(valid: str) -> None:
-    instance = LogUserID(valid)
+    instance = UserIDLog(valid)
     assert str(instance) == valid
 
 
@@ -30,7 +30,7 @@ invalid_identity_st = st.one_of(
 @settings(max_examples=100)
 @given(valid_identity_st)
 async def test_positive(valid: str) -> None:
-    instance = LogUserID(valid)
+    instance = UserIDLog(valid)
     assert str(instance) == valid
 
 
@@ -38,4 +38,4 @@ async def test_positive(valid: str) -> None:
 @given(invalid_identity_st)
 async def test_negative(invalid: str) -> None:
     with pytest.raises(excs.InvalidLogUserIDException):
-        LogUserID(invalid)
+        UserIDLog(invalid)

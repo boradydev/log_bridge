@@ -6,7 +6,7 @@ from src.application.banned_log import excs
 
 
 @dataclass(frozen=True, slots=True)
-class LogUserID:
+class UserIDLog:
     value: str
 
     _PATTERN: ClassVar[Final[re.Pattern[str]]] = re.compile(r"^[a-z0-9-]{5,50}$")
@@ -18,9 +18,13 @@ class LogUserID:
     def __str__(self) -> str:
         return self.value
 
+    @classmethod
+    def is_valid(cls, value: str) -> bool:
+        return bool(cls._PATTERN.fullmatch(value))
+
 
 @dataclass(frozen=True, slots=True)
-class LogDate:
+class DateLog:
     value: str
 
     _PATTERN: ClassVar[Final[re.Pattern[str]]] = re.compile(r"^\d{4}/\d{2}/\d{2}$")
@@ -32,9 +36,13 @@ class LogDate:
     def __str__(self) -> str:
         return self.value
 
+    @classmethod
+    def is_valid(cls, value: str) -> bool:
+        return bool(cls._PATTERN.fullmatch(value))
+
 
 @dataclass(frozen=True, slots=True)
-class LogTime:
+class TimeLog:
     value: str
 
     _PATTERN: ClassVar[Final[re.Pattern[str]]] = re.compile(r"^\d{2}:\d{2}:\d{2}$")
@@ -46,9 +54,13 @@ class LogTime:
     def __str__(self) -> str:
         return self.value
 
+    @classmethod
+    def is_valid(cls, value: str) -> bool:
+        return bool(cls._PATTERN.fullmatch(value))
+
 
 @dataclass(frozen=True, slots=True)
-class LogAction:
+class ActionLog:
     value: str
 
     _PATTERN: ClassVar[Final[re.Pattern[str]]] = re.compile(r"^BAN|^UNBAN$")
@@ -60,9 +72,13 @@ class LogAction:
     def __str__(self) -> str:
         return self.value
 
+    @classmethod
+    def is_valid(cls, value: str) -> bool:
+        return bool(cls._PATTERN.fullmatch(value))
+
 
 @dataclass(frozen=True, slots=True)
-class LogIPAddress:
+class IPAddressLog:
     value: str
 
     _PATTERN: ClassVar[Final[re.Pattern[str]]] = re.compile(
@@ -76,9 +92,13 @@ class LogIPAddress:
     def __str__(self) -> str:
         return self.value
 
+    @classmethod
+    def is_valid(cls, value: str) -> bool:
+        return bool(cls._PATTERN.fullmatch(value))
+
 
 @dataclass(frozen=True, slots=True)
-class LogTag:
+class TagLog:
     value: str
     expected: ClassVar[str] = ""
 
@@ -88,17 +108,24 @@ class LogTag:
                 f"Expected {self.expected}, got {self.value}"
             )
 
+    def __str__(self) -> str:
+        return self.value
+
+    @classmethod
+    def is_valid(cls, value: str) -> bool:
+        return value == cls.expected
+
 
 @dataclass(frozen=True, slots=True)
-class EmailLogTag(LogTag):
+class EmailTagLog(TagLog):
     expected: ClassVar[str] = "[Email]"
 
 
 @dataclass(frozen=True, slots=True)
-class IPLogTag(LogTag):
+class IPTagLog(TagLog):
     expected: ClassVar[str] = "[IP]"
 
 
 @dataclass(frozen=True, slots=True)
-class EqualsLogTag(LogTag):
+class EqualsTagLog(TagLog):
     expected: ClassVar[str] = "="

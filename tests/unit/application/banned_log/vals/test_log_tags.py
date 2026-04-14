@@ -4,18 +4,18 @@ from typing import ClassVar
 import pytest
 
 from src.application.banned_log import excs
-from src.application.banned_log.vals import LogTag
+from src.application.banned_log.vals import TagLog
 
 
 @dataclass(frozen=True, slots=True)
-class MockLogTag(LogTag):
+class MockTagLog(TagLog):
     expected: ClassVar[str] = "valid"
 
 
 async def test_positive() -> None:
-    assert MockLogTag("valid")
+    assert MockTagLog("valid")
 
 
 async def test_negative() -> None:
     with pytest.raises(excs.InvalidLogTagException):
-        MockLogTag("invalid")
+        MockTagLog("invalid")

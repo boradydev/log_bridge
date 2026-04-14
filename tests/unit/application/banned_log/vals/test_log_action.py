@@ -1,7 +1,7 @@
 import pytest
 
 from src.application.banned_log import excs
-from src.application.banned_log.vals import LogAction
+from src.application.banned_log.vals import ActionLog
 
 
 @pytest.mark.parametrize(
@@ -12,7 +12,7 @@ from src.application.banned_log.vals import LogAction
     ],
 )
 async def test_positive(valid: str) -> None:
-    instance = LogAction(valid)
+    instance = ActionLog(valid)
     assert str(instance) == valid
 
 
@@ -27,4 +27,4 @@ async def test_positive(valid: str) -> None:
 )
 async def test_negative(invalid: str) -> None:
     with pytest.raises(excs.InvalidLogActionException):
-        LogAction(invalid)
+        ActionLog(invalid)

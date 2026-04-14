@@ -1,7 +1,7 @@
 import pytest
 
 from src.application.banned_log import excs
-from src.application.banned_log.vals import LogDate
+from src.application.banned_log.vals import DateLog
 
 
 @pytest.mark.parametrize(
@@ -13,7 +13,7 @@ from src.application.banned_log.vals import LogDate
     ],
 )
 async def test_positive(valid: str) -> None:
-    instance = LogDate(valid)
+    instance = DateLog(valid)
     assert str(instance) == valid
 
 
@@ -27,4 +27,4 @@ async def test_positive(valid: str) -> None:
 )
 async def test_negative(invalid: str) -> None:
     with pytest.raises(excs.InvalidLogDateException):
-        LogDate(invalid)
+        DateLog(invalid)

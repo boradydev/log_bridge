@@ -1,7 +1,7 @@
 import pytest
 
 from src.application.banned_log import excs
-from src.application.banned_log.vals import LogTime
+from src.application.banned_log.vals import TimeLog
 
 
 @pytest.mark.parametrize(
@@ -13,7 +13,7 @@ from src.application.banned_log.vals import LogTime
     ],
 )
 async def test_positive(valid: str) -> None:
-    instance = LogTime(valid)
+    instance = TimeLog(valid)
     assert str(instance) == valid
 
 
@@ -30,4 +30,4 @@ async def test_positive(valid: str) -> None:
 )
 async def test_negative(invalid: str) -> None:
     with pytest.raises(excs.InvalidLogTimeException):
-        LogTime(invalid)
+        TimeLog(invalid)
