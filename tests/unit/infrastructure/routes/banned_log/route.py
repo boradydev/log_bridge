@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from src.application.dtos import BanLogRecord
+from src.application.banned_log.dtos import BanLogRecord
 from src.infrastructure.routes import BannedLogRoute
 
 

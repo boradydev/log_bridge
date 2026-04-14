@@ -1,7 +1,6 @@
-import asyncio
 from typing import TYPE_CHECKING
 
-from src.application.cases import BannedEventCase
+from src.application.banned_log.cases import BannedEventCase
 from src.core.paths import PROJECT_DIR
 from src.infrastructure.dispatcher import Dispatcher
 from src.infrastructure.filesystem import LogFile

@@ -1,8 +1,8 @@
 import logging
 from typing import TYPE_CHECKING
 
-from src.application.abcs import ILogCase
-from src.application.dtos import BanLogRecord
+from src.application.banned_log.abcs import ILogCase
+from src.application.banned_log.dtos import BanLogRecord
 from src.presentation.ban_log_dispatcher.abcs import INotifier
 
 

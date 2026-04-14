@@ -2,8 +2,8 @@ import logging
 import re
 from datetime import datetime
 
-from src.application.abcs import ILogCase, ILogger
-from src.application.dtos import BanLogRecord
+from src.application.banned_log.abcs import ILogCase, ILogger
+from src.application.banned_log.dtos import BanLogRecord
 from src.presentation.ban_log_dispatcher.abcs import IRoute
 
 
