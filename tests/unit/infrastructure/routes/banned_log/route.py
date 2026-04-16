@@ -17,7 +17,7 @@ async def test_banned_log_route_success(
     )
     expected_timestamp = datetime.strptime("2026/04/05 10:36:46", "%Y/%m/%d %H:%M:%S")
 
-    match = banned_route.match(line)
+    match = banned_route.extract(line)
     assert match is not None, f"Failed to parse string: {line}"
 
     await banned_route.run(match)
@@ -84,7 +84,7 @@ def test_banned_log_route_dto_factory() -> None:
         "[IP] = 124.464.463.13 banned for 60 seconds."
     )
 
-    match = route.match(line)
+    match = route.extract(line)
     assert match is not None
 
     dto = route._dto_factory(match)
@@ -109,7 +109,7 @@ async def test_run_should_be_resilient_to_case_failures(
         "[IP] = 124.464.463.13 banned for 60 seconds."
     )
 
-    match = banned_route.match(line)
+    match = banned_route.extract(line)
     if match is None:
         raise AssertionError("Failed to match line")
 

@@ -9,13 +9,13 @@ class IFileLog(ABC):
         raise NotImplementedError
 
 
-class IRoute[DTO](ABC):
+class IRoute(ABC):
     @abstractmethod
-    async def run(self, dto: DTO) -> None:
+    async def run(self, data: dict[str, str]) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def match(self, line: str) -> DTO | None:
+    def extract(self, line: str) -> dict[str, str] | None:
         raise NotImplementedError
 
 

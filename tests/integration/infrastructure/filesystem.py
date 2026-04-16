@@ -3,7 +3,7 @@ import asyncio
 import aiofiles
 import pytest
 
-from src.infrastructure.filesystem import LogFile  # проверь путь
+from src.infrastructure.filesystem import LogFile
 
 
 async def test_log_file_reads_dynamic_lines(tmp_path):

@@ -8,7 +8,7 @@ from src.application.banned_log.dtos import BanLogRecord
 from src.presentation.ban_log_dispatcher.abcs import IRoute
 
 
-class BannedLogRoute(IRoute[BanLogRecord]):
+class BannedLogRoute(IRoute):
     _TS_FORMAT: Final = "%Y/%m/%d_%H:%M:%S"
 
     def __init__(self, logger: ILogger | None = None) -> None:
@@ -25,33 +25,36 @@ class BannedLogRoute(IRoute[BanLogRecord]):
     def add_cases(self, cases: ILogCase[BanLogRecord]) -> None:
         self._cases.append(cases)
 
-    def match(self, line: str) -> BanLogRecord | None:
-        vo_map: dict[str, str] = {}
+    def extract(self, line: str) -> dict[str, str] | None:
+        extracted_values: dict[str, str] = {}
         tokens = line.split()
 
         for token in tokens:
             for vo_type in self._val_types:
-                if vo_type.__name__ in vo_map:
+                if vo_type.__name__ in extracted_values:
                     continue
 
                 if vo_type.is_valid(token):
-                    vo_map[vo_type.__name__] = token
+                    extracted_values[vo_type.__name__] = token
                     break
 
-        if len(vo_map) == len(self._val_types):
-            timestamp = vo_map["DateLog"] + "_" + vo_map["TimeLog"]
-            return BanLogRecord(
-                timestamp=datetime.strptime(timestamp, self._TS_FORMAT),
-                action=vo_map["ActionLog"],
-                email=vo_map["UserIDLog"],
-                client_ip=vo_map["IPAddressLog"],
-            )
+        if len(extracted_values) == len(self._val_types):
+            return extracted_values
 
         return None
 
-    async def run(self, dto: BanLogRecord) -> None:
+    async def run(self, data: dict[str, str]) -> None:
         for case in self._cases:
             try:
+                timestamp = (
+                    data[vals.DateLog.__name__] + "_" + data[vals.TimeLog.__name__]
+                )
+                dto = BanLogRecord(
+                    timestamp=datetime.strptime(timestamp, self._TS_FORMAT),
+                    action=data[vals.ActionLog.__name__],
+                    email=data[vals.UserIDLog.__name__],
+                    client_ip=data[vals.IPAddressLog.__name__],
+                )
                 await case.execute(dto)
             except Exception as exc:
                 self._logger.error(exc, exc_info=True)
