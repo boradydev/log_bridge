@@ -1,4 +1,5 @@
 import re
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import ClassVar, Final
 
@@ -6,7 +7,21 @@ from src.application.banned_log import excs
 
 
 @dataclass(frozen=True, slots=True)
-class UserIDLog:
+class IValueObject(ABC):
+    value: str
+
+    @classmethod
+    @abstractmethod
+    def is_valid(cls, value: str) -> bool:
+        """Метод проверки значения без создания экземпляра."""
+        pass
+
+    def __str__(self) -> str:
+        return self.value
+
+
+@dataclass(frozen=True, slots=True)
+class UserIDLog(IValueObject):
     value: str
 
     _PATTERN: ClassVar[Final[re.Pattern[str]]] = re.compile(r"^[a-z0-9-]{5,50}$")
@@ -24,7 +39,7 @@ class UserIDLog:
 
 
 @dataclass(frozen=True, slots=True)
-class DateLog:
+class DateLog(IValueObject):
     value: str
 
     _PATTERN: ClassVar[Final[re.Pattern[str]]] = re.compile(r"^\d{4}/\d{2}/\d{2}$")
@@ -42,7 +57,7 @@ class DateLog:
 
 
 @dataclass(frozen=True, slots=True)
-class TimeLog:
+class TimeLog(IValueObject):
     value: str
 
     _PATTERN: ClassVar[Final[re.Pattern[str]]] = re.compile(r"^\d{2}:\d{2}:\d{2}$")
@@ -60,7 +75,7 @@ class TimeLog:
 
 
 @dataclass(frozen=True, slots=True)
-class ActionLog:
+class ActionLog(IValueObject):
     value: str
 
     _PATTERN: ClassVar[Final[re.Pattern[str]]] = re.compile(r"^BAN|^UNBAN$")
@@ -78,7 +93,7 @@ class ActionLog:
 
 
 @dataclass(frozen=True, slots=True)
-class IPAddressLog:
+class IPAddressLog(IValueObject):
     value: str
 
     _PATTERN: ClassVar[Final[re.Pattern[str]]] = re.compile(
@@ -98,7 +113,7 @@ class IPAddressLog:
 
 
 @dataclass(frozen=True, slots=True)
-class TagLog:
+class TagLog(IValueObject):
     value: str
     expected: ClassVar[str] = ""
 
