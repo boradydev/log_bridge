@@ -42,22 +42,34 @@ def test_ban_log_record_success(
     line,
     expected,
 ) -> None:
-    fields = BanLogRecord.FIELD_PATTERNS.keys()
-    tokens = line.split()
-    data = {}
-    for token, field in zip(tokens, fields, strict=False):
-        if not BanLogRecord.FIELD_PATTERNS[field].fullmatch(token):
-            raise ValueError(f"Failed to parse string: {token}")
-
-        data[field] = token
-
+    data = BanLogRecord.extract_fields(line)
     assert data == expected
     assert BanLogRecord(**data)
 
+@pytest.mark.parametrize(
+    "line",
+    [
+        "2026/04/05 10:36:46   BANNED   [Email] = user-123456  "
+        "[IP] = 124.464.463.13 banned for 60 seconds.",
+        "2026/04/05 10:37:45   UNBANNED   [Email] = user-123456  "
+        "[IP] = 124.464.463.13 unbanned.",
+        "2026/04/05 10:37:45   UNBAN   [Email] = user-123456#%  "
+        "[IP] = 124.464.463.13 unbanned.",
+        "2026/504/05 10:37:45   UNBAN   [Email] = user-123456  "
+        "[IP] = 124.464.463.13 unbanned.",
+        ""
+    ],
+)
+def test_ban_log_record_unsuccess(
+    line
+) -> None:
+    data = BanLogRecord.extract_fields(line)
+    assert data is None
+
 
 def test_fields_unsuccess() -> None:
-    assert not BanLogRecord.FIELD_PATTERNS["date"].fullmatch("2026/04/055")
-    assert not BanLogRecord.FIELD_PATTERNS["time"].fullmatch("10:36:464")
-    assert not BanLogRecord.FIELD_PATTERNS["action"].fullmatch("BANNED")
-    assert not BanLogRecord.FIELD_PATTERNS["email"].fullmatch("user-123456%")
-    assert not BanLogRecord.FIELD_PATTERNS["client_ip"].fullmatch("1244.464.463.13")
+    assert not BanLogRecord._FIELD_PATTERNS["date"].fullmatch("2026/04/055")
+    assert not BanLogRecord._FIELD_PATTERNS["time"].fullmatch("10:36:464")
+    assert not BanLogRecord._FIELD_PATTERNS["action"].fullmatch("BANNED")
+    assert not BanLogRecord._FIELD_PATTERNS["email"].fullmatch("user-123456%")
+    assert not BanLogRecord._FIELD_PATTERNS["client_ip"].fullmatch("1244.464.463.13")

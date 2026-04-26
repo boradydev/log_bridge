@@ -1,5 +1,5 @@
 import re
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 from typing import ClassVar
@@ -7,7 +7,12 @@ from typing import ClassVar
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class IBaseDTO(ABC):
-    FIELD_PATTERNS: ClassVar[dict[str, re.Pattern[str]]]
+    _FIELD_PATTERNS: ClassVar[dict[str, re.Pattern[str]]]
+
+    @classmethod
+    @abstractmethod
+    def extract_fields(cls, line: str) -> dict[str, str] | None:
+        raise NotImplementedError
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -22,7 +27,7 @@ class BanLogRecord(IBaseDTO):
     _equal_ip: str
     client_ip: str
 
-    FIELD_PATTERNS: ClassVar[dict[str, re.Pattern[str]]] = {
+    _FIELD_PATTERNS: ClassVar[dict[str, re.Pattern[str]]] = {
         "date": re.compile(r"^\d{4}/\d{2}/\d{2}$"),
         "time": re.compile(r"^\d{2}:\d{2}:\d{2}$"),
         "action": re.compile(r"^BAN|^UNBAN$"),
@@ -40,3 +45,19 @@ class BanLogRecord(IBaseDTO):
             f"{self.date}_{self.time}",
             "%Y/%m/%d_%H:%M:%S",
         )
+
+    @classmethod
+    def extract_fields(cls, line: str) -> dict[str, str] | None:
+        extracted: dict[str, str] = {}
+        tokens = line.split(maxsplit=len(cls._FIELD_PATTERNS))
+        if len(tokens) < len(cls._FIELD_PATTERNS):
+            return None
+
+        field_names = cls._FIELD_PATTERNS.keys()
+        for token, field in zip(tokens, field_names, strict=False):
+            pattern = cls._FIELD_PATTERNS[field]
+            if not pattern.fullmatch(token):
+                return None
+            extracted[field] = token
+
+        return extracted
