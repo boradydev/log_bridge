@@ -1,4 +1,4 @@
-from src.infrastructure.dispatcher import Dispatcher
+from src.infrastructure.dispatchers.common import Dispatcher
 
 
 async def test_dispatch(
@@ -29,7 +29,7 @@ async def test_dispatch(
     mock_log_file.get_line.side_effect = async_gen
     mock_log_file.file_path = file_path
     dispatcher = Dispatcher(
-        logs=mock_log_file,
+        log_file=mock_log_file,
         logger=mock_logger,
     )
 

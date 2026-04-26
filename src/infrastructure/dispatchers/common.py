@@ -13,27 +13,27 @@ class Dispatcher(IDispatcher):
 
     def __init__(
         self,
-        logs: ILogFile,
+        log_file: ILogFile,
         create_task: Callable[[Coroutine[Any, Any, Any]], Any] | None = None,
         logger: Logger | None = None,
-    ):
-        self.logs = logs
+    ) -> None:
+        self._log_file = log_file
         self._create_task = create_task or asyncio.create_task
         self._logger = logger or logging.getLogger(__name__)
-        self.routes: list[IRoute] = []
+        self._routes: list[IRoute] = []
 
     def add_route(self, route: IRoute):
-        self.routes.append(route)
+        self._routes.append(route)
 
     async def run(self) -> None:
-        self._logger.info(self._START_MSG.format(file_path=self.logs.file_path))
-        async for raw_line in self.logs.get_line():
+        self._logger.info(self._START_MSG.format(file_path=self._log_file.file_path))
+        async for raw_line in self._log_file.get_line():
             line = raw_line.strip()
             if not line:
                 continue
 
             is_handled = False
-            for route in self.routes:
+            for route in self._routes:
                 data = route.extract(line)
                 if data is not None:
                     self._create_task(route.run(data))
@@ -41,5 +41,8 @@ class Dispatcher(IDispatcher):
 
             if not is_handled:
                 self._logger.warning(
-                    self._NO_ROUTE_MSG.format(line=line, file_path=self.logs.file_path)
+                    self._NO_ROUTE_MSG.format(
+                        line=line,
+                        file_path=self._log_file.file_path,
+                    )
                 )
