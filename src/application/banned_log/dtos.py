@@ -16,7 +16,7 @@ class IBaseDTO(ABC):
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
-class BanLogRecord(IBaseDTO):
+class BanLogRecordDTO(IBaseDTO):
     date: str
     time: str
     action: str
