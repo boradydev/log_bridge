@@ -1,6 +1,6 @@
 import pytest
 
-from src.application.banned_log.dtos import BanLogRecord
+from src.application.banned_log.dtos import BanLogRecordDTO
 
 
 @pytest.mark.parametrize(
@@ -42,9 +42,9 @@ def test_ban_log_record_success(
     line,
     expected,
 ) -> None:
-    data = BanLogRecord.extract_fields(line)
+    data = BanLogRecordDTO.extract_fields(line)
     assert data == expected
-    assert BanLogRecord(**data)
+    assert BanLogRecordDTO(**data)
 
 @pytest.mark.parametrize(
     "line",
@@ -63,13 +63,13 @@ def test_ban_log_record_success(
 def test_ban_log_record_unsuccess(
     line
 ) -> None:
-    data = BanLogRecord.extract_fields(line)
+    data = BanLogRecordDTO.extract_fields(line)
     assert data is None
 
 
 def test_fields_unsuccess() -> None:
-    assert not BanLogRecord._FIELD_PATTERNS["date"].fullmatch("2026/04/055")
-    assert not BanLogRecord._FIELD_PATTERNS["time"].fullmatch("10:36:464")
-    assert not BanLogRecord._FIELD_PATTERNS["action"].fullmatch("BANNED")
-    assert not BanLogRecord._FIELD_PATTERNS["email"].fullmatch("user-123456%")
-    assert not BanLogRecord._FIELD_PATTERNS["client_ip"].fullmatch("1244.464.463.13")
+    assert not BanLogRecordDTO._FIELD_PATTERNS["date"].fullmatch("2026/04/055")
+    assert not BanLogRecordDTO._FIELD_PATTERNS["time"].fullmatch("10:36:464")
+    assert not BanLogRecordDTO._FIELD_PATTERNS["action"].fullmatch("BANNED")
+    assert not BanLogRecordDTO._FIELD_PATTERNS["email"].fullmatch("user-123456%")
+    assert not BanLogRecordDTO._FIELD_PATTERNS["client_ip"].fullmatch("1244.464.463.13")

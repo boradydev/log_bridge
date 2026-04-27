@@ -17,7 +17,7 @@ async def test_log_file_reads_dynamic_lines(
         async for line in log_reader.get_line():
             received_lines.append(line)
             if len(received_lines) == len(expected_lines):
-                break
+                await log_reader.close()
 
     try:
         await asyncio.wait_for(

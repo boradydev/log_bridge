@@ -24,16 +24,20 @@ class LogFile(ILogFile):
         self._file_path = file_path
         self._max_chunk_size = max_chunk_size
         self._logger = logger or logging.getLogger(__name__)
+        self._running = True
 
     @property
     def file_path(self) -> str:
         return self._file_path
 
+    async def close(self) -> None:
+        self._running = False
+
     async def get_line(self) -> AsyncIterator[str]:
         async with aiofiles.open(self._file_path) as file:
             await file.seek(0, os.SEEK_END)
 
-            while True:
+            while self._running:
                 line = await file.readline(self._max_chunk_size)
                 if line in self._SKIP_PATTERN:
                     await asyncio.sleep(0.5)
