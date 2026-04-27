@@ -1,41 +1,38 @@
+from __future__ import annotations
+
 import logging
-from typing import TYPE_CHECKING
 
 from src.application.banned_log.abcs import ILogCase
-from src.application.banned_log.dtos import BanLogRecord
+from src.application.banned_log.dtos import BanLogRecordDTO
+from src.core.locales.stub.ban import I18nContext
 from src.presentation.ban_log_dispatcher.abcs import INotifier
 
 
 logger = logging.getLogger(__name__)
 
-if TYPE_CHECKING:
-    from src.core.locales.ban import I18nContext as I18n
 
-
-class BannedEventCase(ILogCase[BanLogRecord]):
+class BannedEventCase(ILogCase[BanLogRecordDTO]):
     def __init__(
         self,
         notifier: INotifier,
-        messages: I18n,
+        messages: I18nContext,
     ) -> None:
         self.notifier = notifier
         self.messages = messages
 
-    async def execute(self, dto: BanLogRecord) -> None:
+    async def execute(self, dto: BanLogRecordDTO) -> None:
         match dto.action:
             case "BAN":
-                message = self.messages.BAN(
+                message = self.messages.ban(
                     email=dto.email,
                     client_ip=dto.client_ip,
-                    duration=dto.duration,
                 )
             case "UNBAN":
-                message = self.messages.UNBAN(
+                message = self.messages.unban(
                     email=dto.email,
                     client_ip=dto.client_ip,
                 )
             case _:
                 logger.warning(f"Unknown action: {dto.action}")
                 return
-
         await self.notifier.send_message(message)
