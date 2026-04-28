@@ -4,7 +4,7 @@ from collections.abc import Callable, Coroutine
 from logging import Logger
 from typing import Any
 
-from src.presentation.ban_log_dispatcher.abcs import IDispatcher, ILogFile, IRoute
+from src.presentation.log_dispatchers.abcs import IDispatcher, ILogFile, IRoute
 
 
 class Dispatcher(IDispatcher):

@@ -2,7 +2,7 @@ import logging
 
 from src.application.banned_log.abcs import ILogCase, ILogger
 from src.application.banned_log.dtos import IBaseDTO
-from src.presentation.ban_log_dispatcher.abcs import IRoute
+from src.presentation.log_dispatchers.abcs import IRoute
 
 
 class Route[DTO: IBaseDTO](IRoute):

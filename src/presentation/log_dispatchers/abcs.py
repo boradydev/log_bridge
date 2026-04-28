@@ -1,11 +1,15 @@
-import re
 from abc import ABC, abstractmethod
 from collections.abc import AsyncIterator
 
 
-class IFileLog(ABC):
+class ILogFile(ABC):
     @abstractmethod
     def get_line(self) -> AsyncIterator[str]:
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def file_path(self) -> str:
         raise NotImplementedError
 
 

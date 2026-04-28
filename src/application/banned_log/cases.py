@@ -5,7 +5,7 @@ import logging
 from src.application.banned_log.abcs import ILogCase
 from src.application.banned_log.dtos import BanLogRecordDTO
 from src.core.locales.stub.ban import I18nContext
-from src.presentation.ban_log_dispatcher.abcs import INotifier
+from src.presentation.log_dispatchers.abcs import INotifier
 
 
 logger = logging.getLogger(__name__)

@@ -2,7 +2,7 @@ import asyncio
 
 from aiogram import Bot
 
-from src.presentation.ban_log_dispatcher.abcs import INotifier
+from src.presentation.log_dispatchers.abcs import INotifier
 
 
 class TelegramNotifier(INotifier):

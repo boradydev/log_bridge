@@ -5,7 +5,7 @@ from collections.abc import AsyncIterator
 
 import aiofiles
 
-from src.presentation.ban_log_dispatcher.abcs import ILogFile
+from src.presentation.log_dispatchers.abcs import ILogFile
 
 
 class LogFile(ILogFile):
