@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from src.application.banned_log.abcs import ILogger
+from src.application.common.abcs import ILogger
 
 
 @pytest.fixture

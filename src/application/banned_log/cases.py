@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-from src.application.banned_log.abcs import ILogCase
+from src.application.common.abcs import ILogCase
 from src.application.banned_log.dtos import BanLogRecordDTO
 from src.core.locales.stub.ban import I18nContext
 from src.presentation.log_dispatchers.abcs import INotifier

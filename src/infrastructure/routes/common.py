@@ -1,6 +1,6 @@
 import logging
 
-from src.application.banned_log.abcs import ILogCase, ILogger
+from src.application.common.abcs import ILogCase, ILogger
 from src.application.banned_log.dtos import IBaseDTO
 from src.presentation.log_dispatchers.abcs import IRoute
 
