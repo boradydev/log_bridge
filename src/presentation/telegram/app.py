@@ -29,7 +29,7 @@ async def telegram_app(app_settings: AppSettings) -> None:
     )
 
     telegram_settings = TelegramSettings()
-    session = AiohttpSession(proxy=telegram_settings.PROXY)
+    session = AiohttpSession(proxy=telegram_settings.HTTP_PROXY)
     bot = Bot(token=telegram_settings.BOT_TOKEN, session=session)
     chat_ids = [telegram_settings.CHAT_ID]
     notifier = TelegramNotifier(

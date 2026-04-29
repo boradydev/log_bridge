@@ -17,12 +17,11 @@ def environ[Type](
 def environ_get[Type](
     cast_type: Callable[[Any], Type],
     key: str,
-    default: Type | None = None,
 ) -> Type | None:
     def _cast_type() -> Type | None:
         value = os.environ.get(key)
-        if not value:
-            return default
+        if value is None:
+            return None
         return cast_type(value)
 
     return field(default_factory=_cast_type)

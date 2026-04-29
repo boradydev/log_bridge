@@ -1,13 +1,16 @@
 from dataclasses import dataclass
 
-from src.core.environ import environ
+from src.core.environ import environ, environ_get
 
 
 @dataclass(frozen=True, slots=True)
 class AppSettings:
-    APP_ENV: str = environ(str, "APP_ENV")
+    DEBUG_MODE: str | None = environ_get(str, "DEBUG_MODE")
     BANNED_LOG_PATH: str = environ(str, "BANNED_LOG_PATH")
 
     @property
     def debug(self) -> bool:
-        return self.APP_ENV == "dev"
+        if self.DEBUG_MODE is None:
+            return False
+
+        return self.DEBUG_MODE.lower() == "true"
