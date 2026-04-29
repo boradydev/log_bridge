@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from typing import ClassVar
 
-from src.application.banned_log.dtos import IBaseDTO
+from src.application.common.dtos import IBaseDTO
 from src.infrastructure.routes.common import Route
 
 
