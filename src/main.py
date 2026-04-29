@@ -16,7 +16,7 @@ async def main() -> None:
     logger = logging.getLogger(__name__)
 
     logger.debug("Starting application")
-    await telegram_app()
+    await telegram_app(app_settings)
 
 
 if __name__ == "__main__":

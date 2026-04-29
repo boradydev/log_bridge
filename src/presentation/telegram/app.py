@@ -14,9 +14,10 @@ from src.presentation.telegram.dispatcher import (
     dispatcher as telegram_dispatcher,
 )
 from src.presentation.telegram.settings import TelegramSettings
+from src.settings import AppSettings
 
 
-async def telegram_app() -> None:
+async def telegram_app(app_settings: AppSettings) -> None:
     logger = logging.getLogger(__name__)
     i18n_core = FluentRuntimeCore(
         path=PROJECT_DIR / "src/core/locales/source/{locale}",
@@ -35,7 +36,7 @@ async def telegram_app() -> None:
         bot=bot,
         chat_ids=chat_ids,
     )
-    banned_logfile = LogFile(str(PROJECT_DIR / "source/banned.log"))
+    banned_logfile = LogFile(app_settings.BANNED_LOG_PATH)
 
     async def on_startup():
         asyncio.create_task(
