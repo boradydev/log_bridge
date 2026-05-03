@@ -30,6 +30,6 @@ async def banned_log_launcher(
     banned_log_route = Route[BanLogRecordDTO](BanLogRecordDTO)
     banned_log_route.add_case(banned_event_case)
 
-    dispatcher = Dispatcher(logfile)
+    dispatcher = Dispatcher(logfile, log_unhandled=True)
     dispatcher.add_route(banned_log_route)
     await dispatcher.run()
