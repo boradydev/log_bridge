@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import ClassVar
 
+from src.application.auth_log.enums import SSHAuthEnum
 from src.application.auth_log.excs import InvalidLineSSHLogException
 from src.application.common.dtos import IBaseDTO
 
@@ -21,10 +22,10 @@ class SSHLogRecordDTO(IBaseDTO):
     }
 
     _find_actions = [
-        "Accepted publickey for",
-        "Disconnected from user",
-        "Connection closed by invalid user",
-        "Connection closed by authenticating user",
+        SSHAuthEnum.SUCCESS,
+        SSHAuthEnum.DISCONNECT,
+        SSHAuthEnum.INVALID_USER,
+        SSHAuthEnum.AUTH_FAILURE,
     ]
 
     @classmethod

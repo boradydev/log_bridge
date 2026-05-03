@@ -9,6 +9,7 @@ from aiogram_i18n.cores import FluentRuntimeCore
 from src.core.paths import PROJECT_DIR
 from src.infrastructure.filesystem import LogFile
 from src.infrastructure.telegram.notifier import TelegramNotifier
+from src.presentation.log_dispatchers.auth import auth_log_launcher
 from src.presentation.log_dispatchers.banned import banned_log_launcher
 from src.presentation.telegram.dispatcher import (
     dispatcher as telegram_dispatcher,
@@ -36,21 +37,42 @@ async def telegram_app(app_settings: AppSettings) -> None:
         bot=bot,
         chat_ids=chat_ids,
     )
-    banned_logfile = LogFile(app_settings.BANNED_LOG_PATH)
+    banned_logfile = (
+        LogFile(app_settings.BANNED_LOG_PATH) if app_settings.BANNED_LOG_PATH else None
+    )
+    auth_logfile = (
+        LogFile(app_settings.AUTH_LOG_PATH) if app_settings.AUTH_LOG_PATH else None
+    )
 
     async def on_startup():
-        asyncio.create_task(
-            banned_log_launcher(
-                i18n_middleware=i18n_middleware,
-                notifier=notifier,
-                logfile=banned_logfile,
+        if banned_logfile:
+            asyncio.create_task(
+                banned_log_launcher(
+                    i18n_middleware=i18n_middleware,
+                    notifier=notifier,
+                    logfile=banned_logfile,
+                )
             )
-        )
+
+        if auth_logfile:
+            asyncio.create_task(
+                auth_log_launcher(
+                    i18n_middleware=i18n_middleware,
+                    notifier=notifier,
+                    logfile=auth_logfile,
+                )
+            )
+
         await notifier.send_message("Bot online")
         logger.debug("Bot started")
 
     async def on_shutdown():
-        await banned_logfile.close()
+        if banned_logfile:
+            await banned_logfile.close()
+
+        if auth_logfile:
+            await auth_logfile.close()
+
         await bot.session.close()
         await i18n_core.shutdown()
         logger.debug("Bot stopped")
