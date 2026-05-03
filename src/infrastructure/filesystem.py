@@ -40,7 +40,7 @@ class LogFile(ILogFile):
             while self._running:
                 line = await file.readline(self._max_chunk_size)
                 if line in self._SKIP_PATTERN:
-                    await asyncio.sleep(0.5)
+                    await asyncio.sleep(0.1)
                     continue
 
                 if not line.endswith("\n"):
