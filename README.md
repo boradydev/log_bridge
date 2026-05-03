@@ -54,8 +54,12 @@ tail bot_output.log
 ```bash
 git pull origin master
 ```
-
-### Set permissions for the log file (if needed)
+### Add a user to the adm group (recommended)
+```bash
+sudo usermod -aG adm $USER && \
+newgrp adm
+```
+### Set permissions for the log file (if needed, not recommended)
 ```bash
 sudo chmod 644 /var/log/some_log_file.log
 ```
