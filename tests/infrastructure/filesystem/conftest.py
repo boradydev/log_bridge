@@ -1,6 +1,7 @@
 import asyncio
+from collections.abc import Callable, Coroutine
 from pathlib import Path
-from typing import Callable, Coroutine, Any
+from typing import Any
 
 import aiofiles
 import pytest
@@ -20,6 +21,6 @@ def writer(file_path) -> Callable[[list[str]], Coroutine[Any, Any, None]]:
             for line in expected_lines:
                 await file.write(line)
                 await file.flush()
-                await asyncio.sleep(0.01)
+                await asyncio.sleep(0.001)
 
     return _writer

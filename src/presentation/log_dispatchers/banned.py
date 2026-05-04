@@ -1,3 +1,4 @@
+import logging
 from typing import cast
 
 from aiogram_i18n import I18nContext, I18nMiddleware
@@ -16,6 +17,7 @@ async def banned_log_launcher(
     i18n_middleware: I18nMiddleware,
     logfile: LogFile,
 ) -> None:
+    logger = logging.getLogger(__name__)
     def build_banned_i18n(ctx: I18nContext) -> BannedI18nContext:
         return cast(BannedI18nContext, ctx)
 
@@ -30,6 +32,6 @@ async def banned_log_launcher(
     banned_log_route = Route[BanLogRecordDTO](BanLogRecordDTO)
     banned_log_route.add_case(banned_event_case)
 
-    dispatcher = Dispatcher(logfile)
+    dispatcher = Dispatcher(logfile, logger=logger, log_unhandled=True)
     dispatcher.add_route(banned_log_route)
     await dispatcher.run()

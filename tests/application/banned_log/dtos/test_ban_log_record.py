@@ -43,8 +43,10 @@ def test_ban_log_record_success(
     expected,
 ) -> None:
     data = BanLogRecordDTO.extract_fields(line)
+    assert data is not None
     assert data == expected
     assert BanLogRecordDTO(**data)
+
 
 @pytest.mark.parametrize(
     "line",
@@ -57,12 +59,10 @@ def test_ban_log_record_success(
         "[IP] = 124.464.463.13 unbanned.",
         "2026/504/05 10:37:45   UNBAN   [Email] = user-123456  "
         "[IP] = 124.464.463.13 unbanned.",
-        ""
+        "",
     ],
 )
-def test_ban_log_record_unsuccess(
-    line
-) -> None:
+def test_ban_log_record_unsuccess(line) -> None:
     data = BanLogRecordDTO.extract_fields(line)
     assert data is None
 

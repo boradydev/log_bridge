@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from src.application.banned_log.abcs import ILogCase
+from src.application.common.abcs import ILogCase
 
 
 @pytest.fixture

@@ -16,11 +16,13 @@ class Dispatcher(IDispatcher):
         log_file: ILogFile,
         create_task: Callable[[Coroutine[Any, Any, Any]], Any] | None = None,
         logger: Logger | None = None,
+        log_unhandled: bool = False,
     ) -> None:
         self._log_file = log_file
         self._create_task = create_task or asyncio.create_task
         self._logger = logger or logging.getLogger(__name__)
         self._routes: list[IRoute] = []
+        self._log_unhandled = log_unhandled
 
     def add_route(self, route: IRoute):
         self._routes.append(route)
@@ -39,7 +41,7 @@ class Dispatcher(IDispatcher):
                     self._create_task(route.run(data))
                     is_handled = True
 
-            if not is_handled:
+            if self._log_unhandled and not is_handled:
                 self._logger.warning(
                     self._NO_ROUTE_MSG.format(
                         line=line,

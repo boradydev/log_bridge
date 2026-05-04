@@ -31,6 +31,7 @@ async def test_dispatch(
     dispatcher = Dispatcher(
         log_file=mock_log_file,
         logger=mock_logger,
+        log_unhandled=True,
     )
 
     first_route_data = {"value1": "first_route", "value2": "line"}
